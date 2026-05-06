@@ -1,0 +1,17 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+sysight
+
+# Go specific
+*.test
+*.out
+
+# Environment
+.env
+
+# VS Code
+.vscode/
