@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"sysight/internal/collector"
 
 	"github.com/spf13/cobra"
 )
