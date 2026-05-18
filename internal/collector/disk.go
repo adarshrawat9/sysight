@@ -1,7 +1,6 @@
 package collector
 
 import (
-	"fmt"
 
 	"github.com/shirou/gopsutil/v3/disk"
 )
@@ -14,7 +13,7 @@ type usageStats struct{
 	Used              uint64
 }
 
-func getpartitions()([]disk.PartitionStat, error){
+func Getpartitions()([]disk.PartitionStat, error){
 	partition, err := disk.Partitions(false)
 	if err != nil{
 		return []disk.PartitionStat{}, err
@@ -23,24 +22,30 @@ func getpartitions()([]disk.PartitionStat, error){
 }
 var gb float64 = float64(1024*1024*1024)
 
-func Usage ()(*usageStats, error){
+func Usage ()([]usageStats, error){
 
-	partition, err := getpartitions()
+	partition, err := Getpartitions()
 	if err != nil{
-		return &usageStats{},err
+		return nil,err
 	}
+
+	var result []usageStats
 
 	for _,p := range partition{
-		usage, err disk.Usage(p.Mountpoint)
+		usage, err := disk.Usage(p.Mountpoint)
 		if err !=  nil{
-			return &usageStats{}, err
+			continue
 		}
-		fmt.Println(p.Mountpoint)
-    fmt.Printf("Total : %.1f GB\n", float64(usage.Total) / gb)
-    fmt.Printf("Used  : %.1f GB\n", float64(usage.Used) / gb)
-    fmt.Printf("Free  : %.1f GB\n", float64(usage.Free) / gb)
-    fmt.Printf("Usage : %.1f%%\n\n", usage.UsedPercent)
 
+		result = append(result, usageStats{
+			Path: p.Mountpoint ,
+			Fstype: usage.Fstype,
+			Total: usage.Total/uint64(gb),
+			Used: usage.Used/uint64(gb),
+			Free: usage.Free/uint64(gb),
+
+		})
 		
 	}
+	return result, nil
 }
