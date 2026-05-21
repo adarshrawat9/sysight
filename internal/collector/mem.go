@@ -10,13 +10,13 @@ type MemoryStats struct{
 	AvialableRam float64
 }
 
-func GetMemoryStats()(*MemoryStats, error){
+func GetMemoryStats()(MemoryStats, error){
 	memStats, err := mem.VirtualMemory()
 	if err != nil{
-		return &MemoryStats{}, err
+		return MemoryStats{}, err
 	}
 	gb := float64(1024*1024*1024)
-	return  &MemoryStats{
+	return  MemoryStats{
 		TotalRam: float64(memStats.Total) /gb,
 		UsedRam: float64(memStats.Used) /gb,
 		AvialableRam: float64(memStats.Available) /gb,
