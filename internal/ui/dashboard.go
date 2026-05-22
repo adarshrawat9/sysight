@@ -10,9 +10,17 @@ import (
 
 //model app state change
 type model struct{
+	//static data
 	cpu collector.CpuInfo
 	host collector.HostInfo
+
+	//dynamic data
 	memory collector.MemoryStats
+}
+
+type staticdata struct{
+	cpu collector.CpuInfo
+	host collector.HostInfo
 }
 
 type tickMsg time.Time
@@ -30,13 +38,17 @@ func InitialModel()model{
 func (m model) Update (msg tea.Msg)(tea.Model, tea.Cmd){
 	switch msg := msg.(type){
 
+
+	case staticdata:
+		m.cpu = msg.cpu
+		m.host = msg.host
+		
+		return m, nil
+		
 	case tickMsg:
-		cpu, _ := collector.ShowInfo()
-		host, _ := collector.GetHostInfo()
+	
 		memory, _ := collector.GetMemoryStats()
 		
-		m.cpu = cpu
-		m.host = host
 		m.memory = memory
 		return m, tick()
 
@@ -51,7 +63,18 @@ func (m model) Update (msg tea.Msg)(tea.Model, tea.Cmd){
 
 
 func (m model)Init() tea.Cmd{
-	return tick()
+
+
+	return tea.Batch(fetchstaticdata, tick())
+}
+
+func fetchstaticdata()tea.Msg{
+	cpu, _ := collector.ShowInfo()
+	host,_ := collector.GetHostInfo()
+
+
+	return staticdata{cpu: cpu, host: host}
+
 }
 
 
