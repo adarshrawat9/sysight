@@ -8,6 +8,7 @@ type MemoryStats struct{
 	TotalRam float64
 	UsedRam float64
 	AvialableRam float64
+	UsedPercentage float64
 }
 
 func GetMemoryStats()(MemoryStats, error){
@@ -20,6 +21,7 @@ func GetMemoryStats()(MemoryStats, error){
 		TotalRam: float64(memStats.Total) /gb,
 		UsedRam: float64(memStats.Used) /gb,
 		AvialableRam: float64(memStats.Available) /gb,
+		UsedPercentage: memStats.UsedPercent,
 
 	}, nil
 }

@@ -6,6 +6,7 @@ import (
 	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 )
 
 //model app state change
@@ -79,12 +80,39 @@ func fetchstaticdata()tea.Msg{
 
 
 func (m model) View() string{
-	return fmt.Sprintf(
-		"CPU   : %s\nRAM   : %.1f GB / %.1f GB\nHost  : %s\n\nPress q to quit",
-        m.cpu.ModelName,
-        m.memory.UsedRam,
-        m.memory.TotalRam,
-        m.host.Hostname,
+
+	if m.cpu.ModelName == ""{
+		return "loading...\n"
+	}
+	title := sectionStyle.Render(
+		titleStyle.Render("Sysight"),
+	)
+
+	cpuSection := sectionStyle.Render(
+		fmt.Sprintf("%s\n%s", row("Cpu  : " , m.cpu.ModelName) ,
+		 row("usage  : " , progressBar(m.memory.UsedRam, 20))),
+	)
+
+	ramSection := sectionStyle.Render(
+		fmt.Sprintf("%s\n%s" , 
+	row("Ram  : " , fmt.Sprintf("%.1f GB / %.1f Gb" , m.memory.UsedRam, m.memory.TotalRam)),
+    row("Usage  : " , progressBar(m.memory.UsedPercentage , 20))),
+	)
+
+	hostSection := sectionStyle.Render(
+		fmt.Sprintf("%s", 
+	    row("Host  : " , m.host.Hostname),
+	
+	),
+)
+
+
+	return lipgloss.JoinVertical(lipgloss.Left,
+	title,
+     cpuSection,
+    ramSection,
+	hostSection,
+	labelStyle.Render("\n Press q to quit"),
 	)
 }
 
