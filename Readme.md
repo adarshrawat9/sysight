@@ -26,23 +26,11 @@ bashsysight -d
 
 CPU Information
 
-bashsysight cpu              # full CPU overview
 sysight cpu cores        # physical core count
 sysight cpu cores -l     # logical core count
 sysight cpu usage        # per core usage %
 sysight cpu info         # model, speed, cores
 
-Memory Information
-
-bashsysight memory           # RAM and swap usage
-
-Disk Information
-
-bashsysight disk             # all drives with usage
-
-Host Information
-
-bashsysight host             # OS, hostname, uptime, boot time
 
 Dashboard Preview
 
